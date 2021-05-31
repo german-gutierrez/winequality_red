@@ -9,17 +9,84 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Descripción del dataset 
+## Descripción del dataset
+
+Este Dataset contiene los datos fisicoquimicos y sensoriales correspondientes a la variación roja del vino portugués "Vinho Verde". Las variables son las siguientes:
+
+1. fixed acidity: acidez fija.
+
+2. volatile acidity: acidez volátil
+
+3. citric acid: ácido cítrico
+
+4. residual sugar: azúcar residual
+
+5. chlorides: cloruros
+
+6. free sulfur dioxide: dióxido de azufre libre
+
+7. total sulfur dioxide: dióxido de azufre total
+
+8. density: densidad
+
+9. pH: pH
+
+10. sulphates: sulfatos
+
+11. alcohol: alcohol
+
+12. quality: calidad (puntuación entre 0 y 10)
 
 ### ¿Por qué es importante y qué pregunta/problema pretende responder?
 
+El objetivo de este análisis es observar la relación entre las variables fisicoquímicas y la calidad del vino, e intentar predecir la calidad a partir de estas.
+
+Este estudio puede ser de gran utilidad en cualquier sector relacionado con el vino, especialmente en bodegas, que pueden usar estos datos para mejorar la calidad de sus vinos.
+
 ## Integración y selección de los datos de interés a analizar.
+
+Para este análisis trabajaremos con el dataset winequality-red disponible en la siguiente URL: https://www.kaggle.com/uciml/red-wine-quality-cortez-et-al-2009
+
+Lo primero que haremos es cargar el dataset:
+
+```{r}
+wineData <- read.csv('winequality-red.csv', sep=",")
+head(wineData)
+```
+
+A priori, todos los datos que contiene el dataset podrían ser relevantes para la estimación de la calidad del vino. Es por esto que trabajaremos con todas las variables que contiene el conjunto de datos.
+
 
 ## Limpieza de los datos.
 
+
 ### ¿Los datos contienen ceros o elementos vacíos?
 
+Una vez cargado el dataset comprobamos si este contiene elementos nulos o vacios.
+
+```{r}
+colSums(is.na(wineData))
+```
+Observamos que no tiene elementos vacíos.
+
+Comprobamos si el dataset contiene ceros.
+
+```{r}
+colSums(wineData==0)
+```
+Vemos que la única columna que contiene zeros es "citric.acid" con 132 registros.
+
 ### ¿Cómo gestionarías cada uno de estos casos?
+
+Hemos visto que para la única variable que tenemos ceros es "citric.acid". Sospechamos que posiblemente, y más habiendo 132 registros con valor zero, sea relativamente frecuente encontrar algunos vinos sin ácido cítrico.
+
+Procedemos a ver más detalladamente las estadísticas de esta variable.
+
+```{r}
+summary(wineData[,3])
+```
+
+Observamos que el primer cuartil tiene un valor de 0.090, la media de 0.260 y el valor máximo es 1. Viendo que hay valores tan cercanos a 0, asumimos que los 132 registros no son campos vacíos y simplemente significan que ese vino no contiene ácido cítrico. 
 
 ### Identificación y tratamiento de valores extremos.
 
@@ -47,12 +114,4 @@ knitr::opts_chunk$set(echo = TRUE)
 | Redacción de las respuestas | GGC, OAA |
 | Desarrollo código           | GGC, OAA |
 
-```{r}
-summary(cars)
-```
-
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
 
