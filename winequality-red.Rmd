@@ -1,0 +1,58 @@
+---
+title: "winequality"
+author: "Germán y Óscar"
+date: "5/31/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Descripción del dataset 
+
+### ¿Por qué es importante y qué pregunta/problema pretende responder?
+
+## Integración y selección de los datos de interés a analizar.
+
+## Limpieza de los datos.
+
+### ¿Los datos contienen ceros o elementos vacíos?
+
+### ¿Cómo gestionarías cada uno de estos casos?
+
+### Identificación y tratamiento de valores extremos.
+
+## Análisis de los datos.
+
+### Selección de los grupos de datos que se quieren analizar/comparar (planificación de los análisis a aplicar).
+
+### Comprobación de la normalidad y homogeneidad de la varianza.
+
+### Aplicación de pruebas estadísticas para comparar los grupos de datos.
+
+## Representación de los resultados a partir de tablas y gráficas.
+
+## Resolución del problema.
+
+### ¿cuáles son las conclusiones?
+
+### ¿Los resultados permiten responder al problema?
+
+## Contribuciones
+
+| Contribuciones              | Firma    |
+|-----------------------------|----------|
+| Investigación previa        | GGC, OAA |
+| Redacción de las respuestas | GGC, OAA |
+| Desarrollo código           | GGC, OAA |
+
+```{r}
+summary(cars)
+```
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
