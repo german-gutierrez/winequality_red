@@ -192,8 +192,34 @@ Los outliers más alejados de la media son:
 residual.sugar
 free.sulfur.dioxide
 total.sulfur.dioxide
-sulphates
-alcohol
+
+Observamos la distribución de la calidad de los vinos de estos outliers.
+
+```{r}
+residual.sugar.outliers.quality = wineData$quality[wineData$residual.sugar %in% boxplot.stats(wineData$residual.sugar)$out]
+
+hist(residual.sugar.outliers.quality)
+
+```
+```{r}
+free.sulfur.dioxide.outliers.quality = wineData$quality[wineData$free.sulfur.dioxide %in% boxplot.stats(wineData$free.sulfur.dioxide)$out]
+
+hist(free.sulfur.dioxide.outliers.quality)
+```
+
+```{r}
+total.sulfur.dioxide.outliers.quality = wineData$quality[wineData$total.sulfur.dioxide %in% boxplot.stats(wineData$total.sulfur.dioxide)$out]
+
+hist(total.sulfur.dioxide.outliers.quality)
+```
+Observamos que los outliers de residual.sugar siguen una distribución normal, mientras que los outliers tanto de free.sulfur.dioxide como de 
+total.sulfur.dioxide adquieren principalmente valores de calidad de 5.
+
+Previamente hemos visto que la correlación entre residual.sugar y quality era muy baja (0.013731637) por lo que tiene sentido que aún en los outliers observemos diferentes valores para quality con una distribución normal.
+
+La correlación entre quality y free.sulfur.dioxide, y quality y total.sulfur.dioxide también es relativamente baja, -0.050656057 y -0.18510029 respectivamente. En estos casos podemos observar que estos outliers coinciden con una calidad mediocre del vino (5 en la mayoría de casos).
+
+Una vez analizados los outliers asumimos que estos valores no son datos erroneos, por lo que no los eliminaremos.
 
 ## Análisis de los datos.
 
