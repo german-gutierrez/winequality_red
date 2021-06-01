@@ -13,29 +13,29 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Este Dataset contiene los datos fisicoquimicos y sensoriales correspondientes a la variación roja del vino portugués "Vinho Verde". Las variables son las siguientes:
 
-1. fixed acidity: acidez fija.
+1. fixed acidity: ácidos no volatiles que no se evaporan fácilmente.
 
-2. volatile acidity: acidez volátil
+2. volatile acidity: indica el contenido de ácido acético en el vino, un alto contenido produce un desagradable sabor a vinagre.
 
-3. citric acid: ácido cítrico
+3. citric acid: actúa como conservante para aumentar la acidez. En pequeñas cantidades aporta frescura y sabor al vino.
 
-4. residual sugar: azúcar residual
+4. residual sugar: es la cantidad de azucar restante despues de la fermantación.Los vinos con más de 45g/l son dulces.
 
-5. chlorides: cloruros
+5. chlorides: La cantidad de sal que tiene el vino.
 
-6. free sulfur dioxide: dióxido de azufre libre
+6. free sulfur dioxide: previene el crecimiento de microbios y la oxidación del vino.
 
-7. total sulfur dioxide: dióxido de azufre total
+7. total sulfur dioxide: Es la cantidad total (libres + ligadas) de SO2 del vino.
 
-8. density: densidad
+8. density: densidad del vino. Los vinos dulces tienen una mayor densidad.
 
-9. pH: pH
+9. pH: el nivel de acidez.
 
-10. sulphates: sulfatos
+10. sulphates: un aditivo del vino que contribuye a los niveles de SO2 y actia como antimicrobiano y antioxidante.
 
-11. alcohol: alcohol
+11. alcohol: la cantidad de alcohol que contiene el vino.
 
-12. quality: calidad (puntuación entre 0 y 10)
+12. quality: calidad del vino (puntuación entre 0 y 10).
 
 ### ¿Por qué es importante y qué pregunta/problema pretende responder?
 
@@ -54,15 +54,24 @@ wineData <- read.csv('winequality-red.csv', sep=",")
 head(wineData)
 ```
 
-A priori, todos los datos que contiene el dataset podrían ser relevantes para la estimación de la calidad del vino. Es por esto que trabajaremos con todas las variables que contiene el conjunto de datos.
+Observamos la correlación entre las diferentes variables para decidir si podemos prescindir de alguna variable redundante.
 
+```{r}
+cor(wineData)
+heatmap(x = cor(wineData), symm = TRUE)
+```
+
+Observamos que las variables más correlacionadas son:
+fixed.acidity y density: tienen una correlación de 0.66804729
+fixed.acidity y citric.acid: tienen una correlación de 0.67170343
+total.sulfur.dioxide y free.sulfur.dioxide: tienen una correlación de 0.667666450
 
 ## Limpieza de los datos.
 
 
 ### ¿Los datos contienen ceros o elementos vacíos?
 
-Una vez cargado el dataset comprobamos si este contiene elementos nulos o vacios.
+Una vez cargado el dataset comprobamos si este contiene elementos nulos o vacíos.
 
 ```{r}
 colSums(is.na(wineData))
@@ -89,6 +98,102 @@ summary(wineData[,3])
 Observamos que el primer cuartil tiene un valor de 0.090, la media de 0.260 y el valor máximo es 1. Viendo que hay valores tan cercanos a 0, asumimos que los 132 registros no son campos vacíos y simplemente significan que ese vino no contiene ácido cítrico. 
 
 ### Identificación y tratamiento de valores extremos.
+
+Para la identificación de outliers utilizaremos los boxplots, que permite recuperar los valores de los outliers además de representarlos gráficamente.
+
+```{r}
+boxplot.stats(wineData$fixed.acidity)$out
+boxplot(wineData$fixed.acidity,
+  ylab = "fixed.acidity"
+)
+```
+```{r}
+boxplot.stats(wineData$volatile.acidity)$out
+boxplot(wineData$volatile.acidity,
+  ylab = "volatile.acidity"
+)
+
+```
+
+```{r}
+boxplot.stats(wineData$citric.acid)$out
+boxplot(wineData$citric.acid,
+  ylab = "citric.acid"
+)
+```
+
+```{r}
+boxplot.stats(wineData$residual.sugar)$out
+boxplot(wineData$residual.sugar,
+  ylab = "residual.sugar"
+)
+```
+
+```{r}
+boxplot.stats(wineData$chlorides)$out
+boxplot(wineData$chlorides,
+  ylab = "chlorides"
+)
+```
+
+```{r}
+boxplot.stats(wineData$free.sulfur.dioxide)$out
+boxplot(wineData$free.sulfur.dioxide,
+  ylab = "free.sulfur.dioxide"
+)
+```
+
+```{r}
+boxplot.stats(wineData$total.sulfur.dioxide)$out
+boxplot(wineData$total.sulfur.dioxide,
+  ylab = "total.sulfur.dioxide"
+)
+```
+
+```{r}
+boxplot.stats(wineData$density)$out
+boxplot(wineData$density,
+  ylab = "density"
+)
+```
+
+```{r}
+boxplot.stats(wineData$pH)$out
+boxplot(wineData$pH,
+  ylab = "pH"
+)
+```
+
+```{r}
+boxplot.stats(wineData$sulphates)$out
+boxplot(wineData$sulphates,
+  ylab = "sulphates"
+)
+```
+
+```{r}
+boxplot.stats(wineData$alcohol)$out
+boxplot(wineData$alcohol,
+  ylab = "alcohol"
+)
+```
+
+A continuación mostramos algunas estadísticas del dataset como la media y el valor máximo de las variables que pueden resultarnos útiles a la hora de identificar mejor los outliers
+
+```{r}
+summary(wineData) 
+```
+
+
+Observamos que todas las variables presentan outliers.
+
+Los outliers más alejados de la media son:
+
+residual.sugar
+free.sulfur.dioxide
+total.sulfur.dioxide
+sulphates
+alcohol
 
 ## Análisis de los datos.
 
