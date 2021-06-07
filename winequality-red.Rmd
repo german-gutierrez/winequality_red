@@ -225,11 +225,98 @@ Una vez analizados los outliers asumimos que estos valores no son datos erroneos
 
 ### Selección de los grupos de datos que se quieren analizar/comparar (planificación de los análisis a aplicar).
 
+En este apartado de análisis de datos tendremos el objetivo de identificar qué es lo que un vino sea bueno, es decir, que hace que su calidad sea alta.
+
+Intentaremos conocer cuales son las características que influyen en la calidad del vino, evaluando la relación de la variable calidad con el resto de variables del dataset.
+
 ### Comprobación de la normalidad y homogeneidad de la varianza.
+
+Comprobaremos la nornmalidad y homogeneidad de la varianza para cada una de las variables del dataset.
+
+- Primero visualizaremos los Q-Q Plots de cada uno de los campos del dataset:
+
+```{r}
+par(mfrow=c(2,2))
+for (i in 1:ncol(wineData)){
+    qqnorm(wineData[,i],main = paste ("Q-Q Normal plot", colnames(wineData)[i]))
+    qqline(wineData[,i],col="red")
+}
+```
+
+Después de realizar los Q-Q Plots y observar que en principio las variable serían candidatas a normalidad, realizamos también el test de Shapiro para cada una de ellas:
+
+```{r}
+shapiro.test(wineData$quality)
+shapiro.test(wineData$fixed.acidity)
+shapiro.test(wineData$volatile.acidity)
+shapiro.test(wineData$citric.acid)
+shapiro.test(wineData$residual.sugar)
+shapiro.test(wineData$chlorides)
+shapiro.test(wineData$free.sulfur.dioxide)
+shapiro.test(wineData$total.sulfur.dioxide)
+shapiro.test(wineData$density)
+shapiro.test(wineData$pH)
+shapiro.test(wineData$sulphates)
+shapiro.test(wineData$alcohol)
+```
+
+```{r}
+```
 
 ### Aplicación de pruebas estadísticas para comparar los grupos de datos.
 
-## Representación de los resultados a partir de tablas y gráficas.
+```{r}
+library(ggplot2)
+ggplot(aes(x = quality, y = alcohol), data = wineData) + geom_point(alpha = 0.30, position = 'jitter') +
+  coord_cartesian(xlim = c(0,10))
+
+boxplot(alcohol~quality, data = wineData,
+    xlab = "Quality",
+    ylab = "Alcohol")
+```
+
+```{r}
+library(ggplot2)
+ggplot(aes(x = quality, y = citric.acid), data = wineData) + geom_point(alpha = 0.30, position = 'jitter') +
+  coord_cartesian(xlim = c(0,10))
+
+boxplot(citric.acid~quality, data = wineData,
+    xlab = "Quality",
+    ylab = "Citric Acid")
+```
+
+```{r}
+library(ggplot2)
+ggplot(aes(x = quality, y = sulphates), data = wineData) + geom_point(alpha = 0.30, position = 'jitter') +
+  coord_cartesian(xlim = c(0,10))
+
+boxplot(sulphates~quality, data = wineData,
+    xlab = "Quality", ylab = "Sulphates") 
+```
+
+
+```{r}
+ggplot(aes(x = citric.acid, y = alcohol, color = quality),
+  data = wineData) + geom_point() +
+  scale_color_gradientn(colors = rainbow(5)) 
+```
+
+```{r}
+ggplot(aes(x = sulphates, y = alcohol, color = quality),
+  data = wineData) + geom_point() +
+  scale_color_gradientn(colors = rainbow(5)) 
+```
+
+```{r}
+model_linear <- lm(quality ~., data = wineData)
+summary(model_linear)
+```
+
+```{r}
+model_linear_sig <- lm(quality ~ citric.acid + sulphates + alcohol, data = wineData)
+summary(model_linear_sig)
+```
+
 
 ## Resolución del problema.
 
