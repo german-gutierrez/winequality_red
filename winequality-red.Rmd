@@ -265,6 +265,12 @@ shapiro.test(wineData$alcohol)
 
 ### Aplicación de pruebas estadísticas para comparar los grupos de datos.
 
+Empezaremos visualizando las correlaciones entre quality y las tres variables que tienen una correlación más alta (alcohol, citric.acid y sulphates).
+
+Primero vamos a visualizar como se relacionan entre ellas uno a uno, es decir, la calidad del vino con cada una de las variables. Visualizamos dos gráficas, una de correlaciones típicas y otra de correlación por distribución de boxplot.
+
+Visualizamos la corelación entre quality y alcohol. Observamos como a mayor cantidad de alcohol más calidad en el vino.
+
 ```{r}
 library(ggplot2)
 ggplot(aes(x = quality, y = alcohol), data = wineData) + geom_point(alpha = 0.30, position = 'jitter') +
@@ -274,6 +280,8 @@ boxplot(alcohol~quality, data = wineData,
     xlab = "Quality",
     ylab = "Alcohol")
 ```
+
+Visualizamos la corelación entre quality y citric.acid. Observamos como a mayor cantidad de citric.acid más calidad en el vino.
 
 ```{r}
 library(ggplot2)
@@ -285,6 +293,8 @@ boxplot(citric.acid~quality, data = wineData,
     ylab = "Citric Acid")
 ```
 
+Visualizamos la corelación entre quality y sulphates.Observamos como a mayor cantidad de sulphates más calidad en el vino, aunque la correlación tiene menos fuerza que las dos observadas anteriormente.
+
 ```{r}
 library(ggplot2)
 ggplot(aes(x = quality, y = sulphates), data = wineData) + geom_point(alpha = 0.30, position = 'jitter') +
@@ -294,6 +304,10 @@ boxplot(sulphates~quality, data = wineData,
     xlab = "Quality", ylab = "Sulphates") 
 ```
 
+Ahora vamos a pasar a visualizar la correlación de la calidad del vino con parejas de los tres elementos que hemos visto.
+
+Empezamos visualizacon la correlación de quality con citric.acid y alcohol. Observamos como a mayor cantidad de ambos, la calidad tiende a ser superior. Aunque observamos que estos dos factores no explican toda la variabilidad de quality.
+
 
 ```{r}
 ggplot(aes(x = citric.acid, y = alcohol, color = quality),
@@ -301,28 +315,52 @@ ggplot(aes(x = citric.acid, y = alcohol, color = quality),
   scale_color_gradientn(colors = rainbow(5)) 
 ```
 
+Empezamos visualizacon la correlación de quality con sulphates y alcohol. De forma similar a la gráfica anterior observamos como a mayor cantidad de ambos, la calidad tiende a ser superior. Igual que en el caso anterior observamos que estos dos factores no explican toda la variabilidad de quality.
+
 ```{r}
 ggplot(aes(x = sulphates, y = alcohol, color = quality),
   data = wineData) + geom_point() +
   scale_color_gradientn(colors = rainbow(5)) 
 ```
 
+Ahora realizaremos dos análisis con la creación de modelos de regresión lineal, concretamente utilizaremos dos modelos:
+
+- Modelo de regresión lineal con todas las variables del dataset.
+- Modelo de regresión lineal con solo las variables con mayor correlación
+
+Realizamos modelo de regresión lineal con todas las variables del dataset.
+
 ```{r}
 model_linear <- lm(quality ~., data = wineData)
 summary(model_linear)
 ```
+
+Observamos como la mayoría de variables tienen un impacto nulo o muy bajo en relación con la calidad. Las variables que tienen un impacto mayor son alcohol y sulphates.
+
+Observando el valor de R^2, podemos explicar  aproximadamente un 35% de la variabilidad de quality.
+
+Realizamos modelo de regresión lineal con solo las variables con mayor correlación.
 
 ```{r}
 model_linear_sig <- lm(quality ~ citric.acid + sulphates + alcohol, data = wineData)
 summary(model_linear_sig)
 ```
 
+Observamos como la variable con mayor influencia en quality es alcohol, seguida a distancia por sulphates y citric.acid.
+
+Con estas tres variables podemos explicar un 28% de la variabilidad de quality. Un dato bastante similar al que obtenemos con todas las variables del dataset.
 
 ## Resolución del problema.
 
+El objetivo del análisis era entender cuales son las características químicas que definen a un buen vino. El análisis nos ha permitido identificar cuales son las variables con influencia en la calidad del vino y cuales tienen muy poca o nula influencia.
+
 ### ¿cuáles son las conclusiones?
 
+Las variables alcohol, sulphates y citric.acid son las que tienen más influencia en la calidad del vino, y explican solo por sí mismas un 28% de la variabilidad. El resto de variables explican un 7% más de la variabilidad del vino, por lo tanto individualmente tienen muy poca influencia en la calidad.
+
 ### ¿Los resultados permiten responder al problema?
+
+Los resultados nos permiten conocer mejor algunas de las causas químicas de la calidad del vino pero no nos permiten comprender en un porcentaje alto de variabilidad los factores que determinan la calidad. Con los datos disponibles solo llegamos a un tercio de la variabilidad. Para mejorar estos datos necesitaríamos variables adicionales y una mejor comprensión del concepto de la calidad en el vino.
 
 ## Contribuciones
 
