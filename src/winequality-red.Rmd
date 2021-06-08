@@ -39,7 +39,7 @@ Este Dataset contiene los datos fisicoquimicos y sensoriales correspondientes a 
 
 ### ¿Por qué es importante y qué pregunta/problema pretende responder?
 
-El objetivo de este análisis es observar la relación entre las variables fisicoquímicas y la calidad del vino y ver cual de estas variables tiene más peso a la hora de determinar la calidad. También se crearán modelos de regresión que permitan predecir la calidad a partir del resto de variables.
+El objetivo de este análisis es observar la relación entre las variables fisicoquímicas y la calidad del vino y ver cual de estas variables tiene más peso a la hora de determinar la calidad. Para ello se utilizarán los siguientes metodos de analisis: contraste de hipotesis, correlaciones y regresiones.
 
 Este estudio puede ser de gran utilidad en cualquier sector relacionado con el vino, especialmente en bodegas, que pueden usar estos datos para mejorar la calidad de sus vinos.
 
@@ -62,9 +62,12 @@ heatmap(x = cor(wineData), symm = TRUE)
 ```
 
 Observamos que las variables más correlacionadas son:
-fixed.acidity y density: tienen una correlación de 0.66804729
-fixed.acidity y citric.acid: tienen una correlación de 0.67170343
-total.sulfur.dioxide y free.sulfur.dioxide: tienen una correlación de 0.667666450
+
+- fixed.acidity y density: tienen una correlación de 0.66804729
+
+- fixed.acidity y citric.acid: tienen una correlación de 0.67170343
+
+- total.sulfur.dioxide y free.sulfur.dioxide: tienen una correlación de 0.667666450
 
 Vemos que ninguna de las variables están altamente correlacionadas (>80) por lo que decidimos trabajar con todas ellas.
 
@@ -183,9 +186,11 @@ Observamos que todas las variables presentan outliers.
 
 Los outliers más alejados de la media son:
 
-residual.sugar
-free.sulfur.dioxide
-total.sulfur.dioxide
+- residual.sugar
+
+- free.sulfur.dioxide
+
+- total.sulfur.dioxide
 
 Observamos la distribución de la calidad de los vinos de estos outliers.
 
@@ -240,8 +245,9 @@ for (i in 1:ncol(wineData)){
 }
 ```
 
-Después de realizar los Q-Q Plots y observar que en principio las variable serían candidatas a normalidad, realizamos también el test de Shapiro para cada una de ellas.
-El test se Shapiro-Wilk asume que toda la población sigue una distribución normal como hipótesis nula. Si el p-value es menor que 0.05 entonces esta hipotesis queda rechazada y se determina que no se sigue una distribución normal.
+Analizando los Q-Q Plots observamos que por lo general las variables siguen una distribución normal, pero todas las variables tienen outliers que parecen salirse de esta normalidad.
+
+A continuación aplicamos el test de Shapiro-wilk a todas las variables. Este test asume que toda la población sigue una distribución normal como hipótesis nula. Si el p-value es menor que 0.05 entonces esta hipotesis queda rechazada y se determina que no se sigue una distribución normal.
 
 
 ```{r}
@@ -260,7 +266,7 @@ shapiro.test(wineData$alcohol)
 ```
 Observamos que ninguna de las variables sigue una distribución normal según el test de Shapiro-Wilk.
 
-Pasamos a comprobar la homogeneidad de la varianza con el test de Fligner-Killeen dado que tal y como hemos visto, las variables no siguen una distribución normal.
+Pasamos a comprobar la homogeneidad de la varianza con el test de Fligner-Killeen dado que, tal y como hemos visto, las variables no siguen una distribución normal.
 
 ```{r}
 fligner.test(fixed.acidity ~ quality, data = wineData)
@@ -276,15 +282,17 @@ fligner.test(sulphates ~ quality, data = wineData)
 fligner.test(alcohol ~ quality, data = wineData)
 ```
 
-Observamos que las variables citric.acid, residual.sugar, pH y sulphates presentan un p-value >= 0.05 para el test de Fligner-Killeen por lo que podemos asumir una igualdad de varianza en los diferentes grupos de quality.
+Observamos que las variables citric.acid, residual.sugar, pH y sulphates presentan un p-value >= 0.05 para el test de Fligner-Killeen por lo que podemos asumir una igualdad de varianza en los diferentes grupos de quality para estas variables.
 
 ### Aplicación de pruebas estadísticas para comparar los grupos de datos.
 
-#### Hipotesis
+
+### Hipotesis
+
 
 A continuación realizaremos un contraste de hipótesis para determinar si la calidad del vino es más alta según si el vino tiene poco alcohol (<12) o mucho (>=12).
 
-Para ello haremos la prueba de Wilcoxon (ya que los datos no siguen una distribución norma) que plantea las siguientes hipotesis
+Para ello haremos la prueba de Wilcoxon (ya que los datos no siguen una distribución normal) que plantea las siguientes hipotesis
 
 - H0: las distribuciones de los grupos de datos son las mismas
 - H1: la distribución de los vinos con más alcohol es mayor que la distribución de vinos con poco alcohol
@@ -294,13 +302,15 @@ wilcox.test(high.alcohol$quality, low.alcohol$quality, alternative = 'greater')
 ```
 Observamos que el p-value es < que 0.05 por lo que rechazamos la hipotesis nula. Confirmando asi, que los vinos con más alcohol tienen una mejor calidad.
 
-#### Correlaciones
+
+### Correlaciones
+
 
 Empezaremos visualizando las correlaciones entre quality y las tres variables que tienen una correlación más alta (alcohol, citric.acid y sulphates).
 
 Primero vamos a visualizar como se relacionan entre ellas uno a uno, es decir, la calidad del vino con cada una de las variables. Visualizamos dos gráficas, una de correlaciones típicas y otra de correlación por distribución de boxplot.
 
-Visualizamos la correlación entre quality y alcohol. Observamos como a mayor cantidad de alcohol más calidad en el vino.
+Visualizamos la correlación entre quality y alcohol.
 
 ```{r}
 library(ggplot2)
@@ -312,7 +322,9 @@ boxplot(alcohol~quality, data = wineData,
     ylab = "Alcohol")
 ```
 
-Visualizamos la correlación entre quality y citric.acid. Observamos como a mayor cantidad de citric.acid más calidad en el vino.
+Observamos como a mayor cantidad de alcohol más calidad en el vino.
+
+Visualizamos la correlación entre quality y citric.acid.
 
 ```{r}
 library(ggplot2)
@@ -324,7 +336,9 @@ boxplot(citric.acid~quality, data = wineData,
     ylab = "Citric Acid")
 ```
 
-Visualizamos la correlación entre quality y sulphates. Observamos como a mayor cantidad de sulphates más calidad en el vino, aunque la correlación tiene menos fuerza que las dos observadas anteriormente.
+Observamos como a mayor cantidad de citric.acid más calidad en el vino.
+
+Visualizamos la correlación entre quality y sulphates. 
 
 ```{r}
 library(ggplot2)
@@ -334,6 +348,8 @@ ggplot(aes(x = quality, y = sulphates), data = wineData) + geom_point(alpha = 0.
 boxplot(sulphates~quality, data = wineData,
     xlab = "Quality", ylab = "Sulphates") 
 ```
+
+Observamos como a mayor cantidad de sulphates más calidad en el vino, aunque la correlación tiene menos fuerza que las dos observadas anteriormente.
 
 Ahora vamos a pasar a visualizar la correlación de la calidad del vino con parejas de los tres elementos que hemos visto.
 
@@ -364,10 +380,11 @@ ggplot(aes(x = sulphates, y = citric.acid, color = quality),
   data = wineData) + geom_point() +
   scale_color_gradientn(colors = rainbow(5)) 
 ```
-Observamos que en este caso la correlación no es tan clara como en las otras dos parejas. Si bien es verdad que la mayotia de vinos con alta calidad se presentan para valores altos de citric.acid y sulphates, también encontramos bastantes vinos de baja calidad para estos mismos valores.
+Observamos que en este caso la correlación no es tan clara como en las otras dos parejas. Si bien es verdad que la mayoría de vinos con alta calidad se presentan para valores altos de citric.acid y sulphates, también encontramos bastantes vinos de baja calidad para estos mismos valores.
 
 
-#### Regresiones
+### Regresiones
+
 
 Ahora realizaremos dos análisis con la creación de modelos de regresión lineal, concretamente utilizaremos dos modelos:
 
