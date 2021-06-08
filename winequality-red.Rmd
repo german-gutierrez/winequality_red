@@ -223,7 +223,7 @@ Para este analisis separaremos los grupos de datos en 2, los que tienen alcohol 
 
 ```{r}
 low.alcohol = wineData[wineData$alcohol < 12,]
-high.alcohol = wineData[wineData$quality >= 12,]
+high.alcohol = wineData[wineData$alcohol >= 12,]
 ```
 
 ### Comprobación de la normalidad y homogeneidad de la varianza.
@@ -280,6 +280,19 @@ Observamos que las variables citric.acid, residual.sugar, pH y sulphates present
 
 ### Aplicación de pruebas estadísticas para comparar los grupos de datos.
 
+#### Hipotesis
+
+A continuación realizaremos un contraste de hipótesis para determinar si la calidad del vino es más alta según si el vino tiene poco alcohol (<12) o mucho (>=12).
+
+Para ello haremos la prueba de Wilcoxon (ya que los datos no siguen una distribución norma) que plantea las siguientes hipotesis
+
+- H0: las distribuciones de los grupos de datos son las mismas
+- H1: la distribución de los vinos con más alcohol es mayor que la distribución de vinos con poco alcohol
+
+```{r}
+wilcox.test(high.alcohol$quality, low.alcohol$quality, alternative = 'greater')
+```
+Observamos que el p-value es < que 0.05 por lo que rechazamos la hipotesis nula. Confirmando asi, que los vinos con más alcohol tienen una mejor calidad.
 
 #### Correlaciones
 
@@ -357,8 +370,6 @@ summary(model_linear)
 
 Observamos como la mayoría de variables tienen un impacto nulo o muy bajo en relación con la calidad. Las variables que tienen un impacto mayor son alcohol y sulphates.
 
-Observando el valor de R^2, podemos explicar  aproximadamente un 35% de la variabilidad de quality.
-
 Realizamos modelo de regresión lineal con solo las variables con mayor correlación.
 
 ```{r}
@@ -368,11 +379,10 @@ summary(model_linear_sig)
 
 Observamos como la variable con mayor influencia en quality es alcohol, seguida a distancia por sulphates y citric.acid.
 
-Con estas tres variables podemos explicar un 28% de la variabilidad de quality. Un dato bastante similar al que obtenemos con todas las variables del dataset.
+Para determinar cual de los dos modelos es mas preciso podemos mirar cual tiene el coeficiente de determinación R-squared más elevado. Podemos determinar así que el modelo con todas las variables (R-squared = 0.3606) es mejor que el modelo con las tres variables más significativas (R-squared = 0.2836).
+
 
 ## Resolución del problema.
-
-El objetivo del análisis era entender cuales son las características químicas que definen a un buen vino. El análisis nos ha permitido identificar cuales son las variables con influencia en la calidad del vino y cuales tienen muy poca o nula influencia.
 
 ### ¿cuáles son las conclusiones?
 
